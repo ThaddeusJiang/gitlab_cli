@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dev
+  name: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 2
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      serviceAccountName: backend
+
+      containers:
+        - name: backend
+          image: asia.gcr.io/staging-123/charge-backend:0f0727b64a7020b58e34bcffd02722c85506b005
+          command: ["/bin/sh"]
+          args: ["-c", "npx prisma migrate deploy && npm run start:prod"]

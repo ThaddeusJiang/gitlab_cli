@@ -6,8 +6,20 @@ defmodule GitlabCli.MixProject do
       app: :gitlab_cli,
       version: "0.1.0",
       elixir: "~> 1.15",
+      build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      escript: escript(),
+      description: description(),
+      package: package(),
+      deps: deps(),
+      name: "GitLab CLI",
+      source: "https://github.com/ThaddeusJiang/gitlab_cli",
+      authors: ["ThaddeusJiang"],
+      docs: [
+        main: "readme",
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -21,8 +33,31 @@ defmodule GitlabCli.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      # {:req, "~> 0.4.0"}, FIXME: 0.4.9
+      {:req, "0.4.9"},
+      {:ex_doc, "~> 0.14", only: :dev, runtime: false}
+    ]
+  end
+
+  defp escript do
+    [
+      main_module: GitlabCli.CLI
+    ]
+  end
+
+  defp description do
+    """
+    GitLab’s unofficial command line tool
+    """
+  end
+
+  defp package do
+    [
+      name: "gitlab_cli",
+      files: ~w(lib priv mix.exs README*),
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/ThaddeusJiang/gitlab_cli"},
+      maintainers: ["ThaddeusJiang"]
     ]
   end
 end

@@ -1,0 +1,22 @@
+stages:
+  - test
+source-testing:
+  stage: test
+  image: elixir:latest
+  script:
+    - mix local.hex --force
+    - mix local.rebar --force
+    - mix deps.get
+    # - mix test
+    - mix escript.build
+    - ./gitlab_cli --project-id 54958131 --source-branch "deploy-test" --target-branch "test" --file-path "src/dev.yml" --pattern "charge-backend:.*" --content "charge-backend:${CI_COMMIT_SHA}"
+
+real-world-testing:
+  stage: test
+  image: elixir:latest
+  script:
+    - mix local.hex --force
+    - mix local.rebar --force
+    - mix escript.install hex gitlab_cli --force
+    - export PATH=$PATH:/root/.mix/escripts
+    - gitlab_cli --project-id 54958131 --source-branch "deploy-main" --target-branch "main" --file-path "src/dev.yml" --pattern "charge-backend:.*" --content "charge-backend:${CI_COMMIT_SHA}"
